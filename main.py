@@ -3,6 +3,7 @@ import serial
 import serial.tools.list_ports
 
 import mythread
+import dataprocess
 
 from PySide2 import QtCore
 from PySide2.QtWidgets import QApplication, QMessageBox, QWidget, QFileDialog
@@ -26,6 +27,12 @@ class MyMainWindow(QWidget):
         self.ui.pushButton_ser_open.clicked.connect(self.pushbutton_ser_open_clicked)
         self.ui.comboBox_ser_select.clicked.connect(self.combobox_ser_select_clicked)
         self.ui.comboBox_ser_select.currentIndexChanged.connect(self.combobox_ser_select_changed)
+
+        dataprocess.globle_ser_signal.update_raw_data.connect(self.ui.lineEdit_full.setText)
+        dataprocess.globle_ser_signal.update_ascii_data1.connect(self.ui.lineEdit_data1.setText)
+        dataprocess.globle_ser_signal.update_ascii_data2.connect(self.ui.lineEdit_data2.setText)
+        dataprocess.globle_ser_signal.update_ascii_data3.connect(self.ui.lineEdit_data3.setText)
+        dataprocess.globle_ser_signal.update_ascii_data4.connect(self.ui.lineEdit_data4.setText)
 
     # 串口选择combobox点击槽函数
     def combobox_ser_select_clicked(self):
@@ -66,6 +73,7 @@ class MyMainWindow(QWidget):
             # 判断串口实例是否创建，如果没创建，则创建
             if self.ser_thread is None:
                 self.ser_thread = mythread.MySerThread()
+                self.ser_thread.setDaemon(True)
             print('打开串口')
             # 尝试打开串口
             try:
